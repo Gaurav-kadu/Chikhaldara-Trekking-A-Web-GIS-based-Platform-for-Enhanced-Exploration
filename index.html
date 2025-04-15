@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web GIS-Based Trekking Destinations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .video-header {
+            position: relative;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .video-header video {
+            width: 100%;
+            height: 100vh;
+            object-fit: cover;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+        .overlay h1 {
+            font-weight: 900;
+            font-size: 4rem;
+            color: #ffcc00;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+        }
+        .overlay p {
+            font-weight: 900;
+            font-size: 2rem;
+            color: #ffcc00;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+            margin-top: 20px;
+        }
+        .section-title {
+            color: #1e5631;
+            font-weight: bold;
+        }
+        .map-container {
+            height: 500px;
+            width: 100%;
+            margin: 20px 0;
+        }
+        .trek-card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            height: 100%;
+        }
+        .footer {
+            background-color: #1e5631;
+            color: white;
+            text-align: center;
+            padding: 20px 10px;
+        }
+        .footer a {
+            margin: 0 10px;
+            color: white;
+            font-size: 24px;
+        }
+        .download-btn {
+            display: block;
+            margin: 20px auto;
+        }
+        .blockquote-footer {
+            margin-top: 10px;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        <style>
+  .trek-card {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .trek-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  .trek-card img {
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+  }
+
+  .trek-card:hover img {
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 767.98px) {
+    .carousel-item > .row {
+      display: flex;
+      justify-content: center;
+    }
+  }
+</style>
+
+        
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Trekking Chikhaldara</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+              <li class="nav-item"><a class="nav-link" href="#trekking-trails">Trekking Trails</a></li>
+              <li class="nav-item"><a class="nav-link" href="#our-services">Our Services</a></li>
+              <li class="nav-item"><a class="nav-link" href="#contact-us">Contact Us</a></li>
+              <li class="nav-item"><a class="nav-link" href="#review">Review</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      
+    <div class="video-header">
+        <video autoplay muted loop>
+            <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4">
+        </video>
+        <div class="overlay">
+            <h1 class="display-4">Explore Chikhaldara's Hidden Treks</h1>
+            <p class="lead">Your ultimate Web GIS-based trekking companion</p>
+        </div>
+    </div>
+
+
+    <div class="container mt-5" id="content">
+        <h2 class="section-title text-center" id="about">About</h2>
+        <p class="lead text-center">
+            This Web GIS platform is developed to enhance the trekking experience in the Chikhaldhara region by providing an interactive map, 
+            detailed trail highlights, and essential information for adventurers. Created as part of a college project, the platform seamlessly 
+            integrates geospatial technology with real-world exploration. It aims to serve as a comprehensive guide for trekking enthusiasts, 
+            enabling easier navigation, better planning, and a safer, more informed outdoor experience.
+        </p>
+
+
+
+        <h2 class="section-title text-center" id="trekking-trails">Trekking Trails</h2>
+        <div class="row">
+            <div class="col-md-6 col-lg-4 d-flex justify-content-center">
+                <div class="trek-card p-3">
+                    <img src="ImagesforHtml/dharkora.jpg" alt="Dharkora Trek" class="img-fluid rounded mx-auto d-block">
+                    <h3>Dharkora Trek <span class="badge bg-success">Easy</span></h3>
+                    <p>Enjoy scenic views and beginner-friendly paths perfect for a quick nature escape.</p>
+                    <ul class="list-unstyled">
+                        <li><strong>Distance:</strong> 4.5 km</li>
+                        <li><strong>Duration:</strong> 2 hrs</li>
+                        <div class="row g-4">
+                          <div class="col-md-6 col-lg-4 mb-4 d-flex justify-content-center"></div>
+                    </ul>
+                </div>
+            </div>
+        
+            <div class="col-md-6 col-lg-4 d-flex justify-content-center">
+                <div class="trek-card p-3">
+                    <img src="ImagesforHtml/Bakadari.png" alt="Bakadari" class="img-fluid rounded mx-auto d-block">
+                    <h3>Bakadari Trail <span class="badge bg-warning text-dark">Moderate</span></h3>
+                    <p>Winding trail through valleys and plateaus, excellent for intermediate trekkers.</p>
+                    <ul class="list-unstyled">
+                        <li><strong>Distance:</strong> 7.2 km</li>
+                        <li><strong>Duration:</strong> 3.5 hrs</li>
+                        <div class="row g-4"></div>
+                          <div class="col-md-6 col-lg-4 mb-4 d-flex justify-content-center"></div>
+                    </ul>
+                </div>
+            </div>
+        
+            <div class="col-md-6 col-lg-4 d-flex justify-content-center">
+                <div class="trek-card p-3">
+                    <img src="ImagesforHtml\chichati.jpg" alt="Chichati" class="img-fluid rounded mx-auto d-block">
+                    <h3>Chichati Trek <span class="badge bg-danger">Hard</span></h3>
+                    <p>Adventurous hike through dense forest and rough terrain for seasoned trekkers.</p>
+                    <ul class="list-unstyled">
+                        <li><strong>Distance:</strong> 9.5 km</li>
+                        <li><strong>Duration:</strong> 5 hrs</li>
+                        <div class="row g-4"></div>
+                          <div class="col-md-6 col-lg-4 mb-4 d-flex justify-content-center">
+                    </ul>
+                </div>
+            </div>
+        
+            <div class="col-md-6 col-lg-4 d-flex justify-content-center">
+                <div class="trek-card p-3">
+                    <img src="ImagesforHtml\kalalkund.jpg" alt="Kalalkund" class="img-fluid rounded mx-auto d-block">
+                    <h3>Kalalkund Trek <span class="badge bg-warning text-dark">Moderate</span></h3>
+                    <p>Beautiful trek alongside waterfalls and natural pools—perfect for photographers.</p>
+                    <ul class="list-unstyled">
+                        <li><strong>Distance:</strong> 8 km</li>
+                        <li><strong>Duration:</strong> 4 hrs</li>
+                        <div class="row g-4"></div>
+                        <div class="col-md-6 col-lg-4 mb-4 d-flex justify-content-center">
+                    </ul>
+                </div>
+            </div>
+        
+            <div class="col-md-6 col-lg-4 d-flex justify-content-center">
+                <div class="trek-card p-3">
+                    <img src="ImagesforHtml\Bhimkund.jpg" alt="Bhimkund" class="img-fluid rounded mx-auto d-block">
+                    <h3>Bhimkund Trek <span class="badge bg-warning text-dark">Moderate</span></h3>
+                    <p>Features caves, waterfalls, and legends—ideal for exploration and spirituality.</p>
+                    <ul class="list-unstyled">
+                        <li><strong>Distance:</strong> 6.5 km</li>
+                        <li><strong>Duration:</strong> 3-4 hrs</li>
+                        <div class="row g-4"></div>
+                          <div class="col-md-6 col-lg-4 mb-4 d-flex justify-content-center">
+        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+        
+        
+        
+        
+        
+        <button class="btn btn-success download-btn" onclick="downloadPDF()">Download Treks as PDF</button>
+
+        <h2 class="section-title mt-5">Trek Info PDF</h2>
+        
+        <div style="text-align: center;">
+          <iframe src="pdf\Chikhaldara_Trekking_Guide.pdf" width="640" height="480" style="border: none;"></iframe>
+        </div>
+        
+
+
+        
+
+
+        <h2 class="section-title mt-5" id="our-services">Our Services</h2>
+<ul class="fs-5">
+    <li>📍 <strong>Interactive Trail Maps </strong> with real-time trail insights and locations</li>
+    <li>🧭 <strong>Detailed Trek Info</strong> including difficulty, elevation, and duration</li>
+    <li>🏕️ <strong>Comprehensive info</strong> on popular and offbeat trekking destinations</li>
+    <li>🧑‍💻 <strong>User-friendly interface</strong> built for both new and experienced trekkers</li>
+    <li>🌐 <strong>Accessible anytime</strong>, anywhere—on mobile, tablet or desktop</li>
+    <li>📌 <strong>PDF download support</strong> for offline itinerary planning</li>
+    <li>🌿 <strong>Promotes eco-tourism</strong> and supports sustainable travel</li>
+</ul>
+
+
+<h2 class="section-title mt-5">Interactive Trek Map</h2>
+<div id="map" class="map-container"></div>
+
+<div style="text-align: center;">
+  <video width="640" height="360" controls style="border: 4px solid #000; border-radius: 8px;">
+    <source src="video\invideo-ai-720 Chikhaldara Trekking_ Web GIS से रोमांचक सफर 2025-04-10.mp4" type="video/mp4" alt="Chikhaldara Trekking_ Web GIS">
+    Your browser does not support the video tag.
+  </video>
+</div>
+
+      
+
+        <h2 class="section-title mt-5" id="review">Review</h2>
+        <div class="row mt-4">
+
+            <div class="col-md-4 mb-4">
+              <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title">Chichati</h5>
+                  <p class="text-warning">⭐⭐⭐⭐⭐</p>
+                  <p class="card-text">Chichati waterfall was an absolute delight! Peaceful vibe and crystal-clear water made it all worth it.</p>
+                  <p class="card-text"><small class="text-muted">— Nisha Kulkarni, Nagpur</small></p>
+                </div>
+              </div>
+            </div>
+          
+            <div class="col-md-4 mb-4">
+              <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title">Bakadari</h5>
+                  <p class="text-warning">⭐⭐⭐⭐</p>
+                  <p class="card-text">The view from the top is just amazing. Water was gushing and it made for a perfect picnic spot.</p>
+                  <p class="card-text"><small class="text-muted">— Ankit Sahu, Amravati</small></p>
+                </div>
+              </div>
+            </div>
+          
+            <div class="col-md-4 mb-4">
+              <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title">Kalalkund</h5>
+                  <p class="text-warning">⭐⭐⭐⭐⭐</p>
+                  <p class="card-text">Kalalkund feels untouched and wild. A must-visit for nature lovers.</p>
+                  <p class="card-text"><small class="text-muted">— Pooja Thakre, Wardha</small></p>
+                </div>
+              </div>
+            </div>
+          
+            <div class="col-md-4 mb-4">
+              <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title">Dharkora</h5>
+                  <p class="text-warning">⭐⭐⭐⭐</p>
+                  <p class="card-text">Dharkora is peaceful and less crowded. Ideal for a solo trek or quiet photography.</p>
+                  <p class="card-text"><small class="text-muted">— Vishal More, Akola</small></p>
+                </div>
+              </div>
+            </div>
+          
+            <div class="col-md-4 mb-4">
+              <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title">Bhimkund</h5>
+                  <p class="text-warning">⭐⭐⭐⭐⭐</p>
+                  <p class="card-text">Bhimkund’s deep blue water and local stories make it a mystical and beautiful spot.</p>
+                  <p class="card-text"><small class="text-muted">— Ritika Jain, Chhindwara</small></p>
+                </div>
+              </div>
+            </div>
+          
+          </div>
+          
+          
+
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" class="btn btn-dark back-to-top">↑ Top</button>
+
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+<script>
+    const map = L.map('map').setView([21.405, 77.33], 12);
+
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    
+    const treks = [
+        {
+            name: "Dharkora Trek",
+            coords: [[21.390, 77.310], [21.392, 77.312], [21.394, 77.314]],
+            color: "green",
+            startLabel: "Semadoh (Near Panchbol Point)",
+        },
+        {
+            name: "Bakadari Trek",
+            coords: [[21.410, 77.340], [21.412, 77.342], [21.414, 77.344]],
+            color: "orange",
+            startLabel: "Near Chikhaldara (via Semadoh)",
+        },
+        {
+            name: "Chichati Trek",
+            coords: [[21.430, 77.320], [21.432, 77.318], [21.434, 77.316]],
+            color: "red",
+            startLabel: "Chichati Village",
+        },
+        {
+            name: "Kalalkund Trek",
+            coords: [[21.400, 77.360], [21.398, 77.362], [21.396, 77.364]],
+            color: "blue",
+            startLabel: "Kolkas Area (via Semadoh)",
+        },
+        {
+            name: "Bhimkund Trek",
+            coords: [[21.4072, 77.2889], [21.408, 77.290], [21.409, 77.292]],
+            color: "purple",
+            startLabel: "Dharni or Kichakdara Village",
+        }
+    ];
+
+    const labelStyle = {
+        className: 'label-text',
+        iconSize: [100, 20],
+        iconAnchor: [50, 10]
+    };
+
+   
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .label-text {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            font-size: 13px;
+            font-weight: bold;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+            white-space: nowrap;
+        }
+    `;
+    document.head.appendChild(style);
+
+    
+    treks.forEach(trek => {
+        
+        L.polyline(trek.coords, {
+            color: trek.color,
+            weight: 4,
+            opacity: 0.9
+        }).addTo(map);
+
+       
+        const marker = L.marker(trek.coords[0]).addTo(map);
+        marker.bindPopup(`<b>${trek.name}</b><br>Start: ${trek.startLabel}`);
+
+        
+        const label = L.divIcon({
+            ...labelStyle,
+            html: trek.name
+        });
+
+        L.marker(trek.coords[0], { icon: label }).addTo(map);
+    });
+</script>
+
+
+
+    <h2 class="section-title mt-5 text-center" id="contact-us">Contact Us</h2>
+
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6"> <!-- You can adjust 6 to 4 or 5 for even narrower -->
+          <form style="margin-bottom: 60px;">
+
+            <div class="mb-3">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-control" placeholder="Your name">
+            </div>
+    
+            <div class="mb-3">
+              <label class="form-label">Mobile Number</label>
+              <input type="number" class="form-control" placeholder="Mobile number">
+            </div>
+    
+            <div class="mb-3">
+              <label class="form-label">Your inquiry</label>
+              <textarea class="form-control" rows="3" placeholder="Write a message"></textarea>
+            </div>
+    
+            <div class="text-center">
+              <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+
+  
+  <footer style="background: #e3edf0; color: #333; padding: 60px 0; font-family: 'Segoe UI', sans-serif;">
+
+    <div class="container text-center">
+      <h4 style="font-weight: 600;">ALSO CONNECT WITH US AT</h4>
+      <p style="margin-bottom: 30px;">Follow us on social media to stay updated on latest treks, destinations, and events.</p>
+  
+      <div style="margin-bottom: 30px;">
+        <a href="https://www.linkedin.com/in/punam-deshmukh-461a6a202/" target="_blank" class="social-icon facebook">
+          <i class="fab fa-linkedin fa-2x"></i>
+        </a>
+        <a href="https://www.instagram.com/the_core_life/" target="_blank" class="social-icon instagram">
+          <i class="fab fa-instagram fa-2x"></i>
+        </a>
+        <a href="https://www.youtube.com/watch?v=yEc4hbtPSZE" target="_blank" class="social-icon youtube">
+          <i class="fab fa-youtube fa-2x"></i>
+        </a>
+      </div>
+  
+      <hr style="border-color: #ccc; width: 80%; margin: auto;">
+  
+      <p style="margin-top: 20px;">© 2025 <strong>Chikhaldhara Trekking: A Web GIS-based Platform for Enhanced Exploration</strong>. All Rights Reserved.</p>
+      <p style="font-size: 14px;">Developed by <a href="https://www.linkedin.com/in/punam-deshmukh-461a6a202/" target="_blank" style="color: #2d738f; text-decoration: none;">Punam Deshmukh</a></p>
+    </div>
+  </footer>
+  
+
+  <style>
+    .social-icon {
+      margin: 0 12px;
+      display: inline-block;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+  
+    .social-icon:hover {
+      transform: scale(1.2);
+    }
+  
+    .linkedin:hover {
+      color: #1877f2;
+    }
+  
+    .instagram:hover {
+      color: #e1306c;
+    }
+  
+    .youtube:hover {
+      color: #ff0000;
+    }
+  </style>
+  
+
+
+</body>
+
+</html>

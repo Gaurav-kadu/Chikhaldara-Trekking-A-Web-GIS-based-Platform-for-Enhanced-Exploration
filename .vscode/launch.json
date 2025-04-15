@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web GIS-Based Trekking Destinations</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .video-header {
+            position: relative;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .video-header video {
+            width: 100%;
+            height: 100vh;
+            object-fit: cover;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+        .overlay h1 {
+            font-weight: 900;
+            font-size: 4rem;
+            color: #ffcc00;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+        }
+        .overlay p {
+            font-weight: 900;
+            font-size: 2rem;
+            color: #ffcc00;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+            margin-top: 20px;
+        }
+        .section-title {
+            color: #1e5631;
+            font-weight: bold;
+        }
+        .map-container {
+            height: 500px;
+            width: 100%;
+            margin: 20px 0;
+        }
+        .trek-card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .footer {
+            background-color: #1e5631;
+            color: white;
+            text-align: center;
+            padding: 20px 10px;
+        }
+        .footer a {
+            margin: 0 10px;
+            color: white;
+            font-size: 24px;
+        }
+        .download-btn {
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="video-header">
+        <video autoplay muted loop>
+            <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4">
+        </video>
+        <div class="overlay">
+            <h1 class="display-4">Explore Chikhaldara's Hidden Treks</h1>
+            <p class="lead">Your ultimate Web GIS-based trekking companion</p>
+        </div>
+    </div>
+
+    <div class="container mt-5" id="content">
+        <h2 class="section-title text-center">Featured Trekking Trails</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="trek-card p-3">
+                    <img src="https://source.unsplash.com/600x400/?mountains,forest" class="img-fluid rounded" alt="Dharkora">
+                    <h3>Dharkora Trek</h3>
+                    <p>An adventurous trail weaving through dense forests and steep ascents offering scenic viewpoints.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="trek-card p-3">
+                    <img src="https://source.unsplash.com/600x400/?hiking,path" class="img-fluid rounded" alt="Bakadari">
+                    <h3>Bakadari Trail</h3>
+                    <p>A relatively easier trail known for beautiful waterfalls and relaxed routes perfect for beginners.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="trek-card p-3">
+                    <img src="https://source.unsplash.com/600x400/?trekking,trail" class="img-fluid rounded" alt="Chichati">
+                    <h3>Chichati Trek</h3>
+                    <p>A challenging route that takes you through rocky terrains to the majestic Chichati cliffs.</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-success download-btn" onclick="downloadPDF()">Download Treks as PDF</button>
+
+        <h2 class="section-title mt-5">Interactive Trail Map</h2>
+        <div id="map" class="map-container"></div>
+
+        <h2 class="section-title mt-5">Why Choose Our Platform?</h2>
+        <p class="fs-5">
+            Join Us for the Latest Updates and Well-Planned Itineraries! Discover the breathtaking trekking destinations near
+            Chikhaldara through our interactive Web GIS-based platform. This site showcases detailed maps of renowned trails,
+            including the serene Dharkora Trek, the challenging Chichati route, and the scenic pathways leading to the
+            mesmerizing Chikhaldara Peaks. Our website provides essential information on trail difficulty, duration,
+            elevation, and nearby attractions, all while allowing seamless navigation through captivating satellite imagery.
+        </p>
+
+        <p class="fs-5">
+            Chikhaldara is also home to hidden gems like the enchanting Gawilgarh Fort and the tranquil Semadoh Lake, perfect for
+            those seeking less-trodden paths. Whether you’re a seasoned trekker or a novice adventurer, we equip you with all the
+            tools you need to plan your next unforgettable journey in the heart of Vidarbha’s natural beauty.
+        </p>
+
+        <blockquote class="blockquote text-center mt-4">
+            <p class="mb-0">“Every path tells a story; let yours unfold in Chikhaldara's embrace.”</p>
+            <footer class="blockquote-footer">The Trekkers' Community</footer>
+        </blockquote>
+
+        <h2 class="section-title mt-5">About the Project: Web GIS Trekking Platform</h2>
+        <p class="fs-5">
+            This Web GIS-based project, titled <strong>“Chikhaldhara Trekking: A Web GIS-based Platform for Enhanced Exploration”</strong>, was developed as a final-year academic initiative.
+            It leverages GIS mapping technologies to offer trekkers detailed insights into Chikhaldara’s trekking trails, enabling smarter and safer exploration.
+            The platform was designed using open-source tools, satellite imagery, and interactive map integration, ensuring a user-friendly interface for navigation and trip planning.
+            Our goal is to encourage eco-tourism and promote the hidden gems of the region while supporting sustainable trekking practices.
+        </p>
+        <p class="fs-5">
+            Developed by <strong>Your Name</strong>, a GIS and Remote Sensing enthusiast from <strong>Your College Name</strong> under the mentorship of <strong>Professor/Supervisor Name</strong>.
+            We express our gratitude to our department and funders for enabling this platform that blends technology with nature exploration.
+        </p>
+    </div>
+
+    <div class="container my-5 text-center">
+        <h2 class="section-title">Our Instagram Highlights</h2>
+        <iframe src="https://widgets.sociablekit.com/instagram-feed/iframe/200062" 
+                frameborder="0" width="100%" height="600" 
+                style="border: none; overflow: hidden;" 
+                allowfullscreen></iframe>
+    </div>
+
+    <div class="footer">
+        <p>Connect with Us:</p>
+        <a href="https://instagram.com" target="_blank"><i class="bi bi-instagram"></i> Instagram</a>
+        <a href="https://youtube.com" target="_blank"><i class="bi bi-youtube"></i> YouTube</a>
+        <a href="https://wa.me/1234567890" target="_blank"><i class="bi bi-whatsapp"></i> WhatsApp</a>
+        <p class="mt-3">&copy; 2025 Web GIS Trekking - All Rights Reserved</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([21.403, 77.3268], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        L.marker([21.390, 77.310]).addTo(map).bindPopup("Dharkora Trek").openPopup();
+        L.marker([21.410, 77.340]).addTo(map).bindPopup("Bakadari Trail");
+        L.marker([21.430, 77.320]).addTo(map).bindPopup("Chichati Trek");
+
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const content = document.getElementById('content');
+            doc.html(content, {
+                callback: function (doc) {
+                    doc.save('Chikhaldara_Treks.pdf');
+                },
+                x: 10,
+                y: 10,
+                width: 180
+            });
+        }
+    </script>
+</body>
+
+</html>
+   
